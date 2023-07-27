@@ -1,6 +1,6 @@
 import React from 'react';
 import { Formik } from 'formik';
-
+import * as Yup from 'yup';
 import {
   Error,
   FormField,
@@ -10,7 +10,23 @@ import {
   FormStyle,
 } from './Form.styled';
 
-const FormComponent = ({ onSubmit, initialValues, validationSchema }) => {
+const initialValues = {
+  name: '',
+  phoneNumber: '',
+};
+
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required('Name is required'),
+  phoneNumber: Yup.string()
+    .required('Phone number is required')
+    .matches(/^[0-9]+$/, 'Invalid phone number'),
+});
+
+const FormComponent = ({ onSubmit }) => {
+  const handleSubmit = (values, { resetForm }) => {
+    onSubmit(...values);
+    resetForm();
+  };
   return (
     <Formik
       initialValues={initialValues}

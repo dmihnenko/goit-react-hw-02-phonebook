@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import FormComponent from './form/Form';
-import * as Yup from 'yup';
 import { nanoid } from 'nanoid';
 import FriendList from './list/List';
 import SearchBar from './Finder/Finder';
@@ -12,22 +11,18 @@ export class App extends Component {
     filter: '',
   };
 
-  initialValues = {
-    name: '',
-    phoneNumber: '',
-  };
-
-  onSubmit = (values, { resetForm }) => {
-    if (this.state.contacts.some(contact => contact.name === values.name)) {
-      alert(`${values.name} is already in your contacts`);
-      resetForm();
-    } else {
-      values.id = nanoid();
-      this.setState(prevState => ({
-        contacts: [...prevState['contacts'], values],
-      }));
-      resetForm();
+  onSubmit = newContact => {
+    const duplicated = this.state.contacts.some(
+      contact => contact.name.toLowerCase() === newContact.name.toLowerCase()
+    );
+    if (duplicated) {
+      alert(`${newContact.name} is already in your contacts`);
+      return;
     }
+    newContact.id = nanoid();
+    this.setState(prevState => ({
+      contacts: [...prevState.contacts, newContact],
+    }));
   };
 
   deleteContactById = event => {
@@ -53,23 +48,12 @@ export class App extends Component {
     );
   };
 
-  FormSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    phoneNumber: Yup.string()
-      .required('Phone number is required')
-      .matches(/^[0-9]+$/, 'Invalid phone number'),
-  });
-
   render() {
     return (
       <>
         <Container>
           <h2>Phonebook</h2>
-          <FormComponent
-            onSubmit={this.onSubmit}
-            initialValues={this.initialValues}
-            validationSchema={this.FormSchema}
-          />
+          <FormComponent onSubmit={this.onSubmit} />
           <h2 style={{ marginTop: '3rem', marginBottom: '0px' }}>Contacts</h2>
           <SearchBar
             value={this.state.filter}
