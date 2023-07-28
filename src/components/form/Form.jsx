@@ -24,7 +24,7 @@ const validationSchema = Yup.object().shape({
 
 const FormComponent = ({ onSubmit }) => {
   const handleSubmit = (values, { resetForm }) => {
-    onSubmit(...values);
+    onSubmit({ ...values });
     resetForm();
   };
   return (
