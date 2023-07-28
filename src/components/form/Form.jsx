@@ -31,7 +31,7 @@ const FormComponent = ({ onSubmit }) => {
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={onSubmit}
+      onSubmit={handleSubmit}
     >
       <FormStyle>
         <FormField>
